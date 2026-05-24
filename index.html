@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NH Estética</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#E8A8B8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="NH Estética">
+<style>
+:root{--rosa:#E8A8B8;--rosa-claro:#F5D5DF;--rosa-suave:#FBF0F3;--nude:#E8D5C4;--crema:#FDFAF7;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Jost',sans-serif;background:var(--crema);color:#000;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:-30%;right:-20%;width:70vw;height:70vw;background:radial-gradient(circle,var(--rosa-claro) 0%,transparent 70%);border-radius:50%;z-index:0;pointer-events:none;}
+body::after{content:'';position:fixed;bottom:-20%;left:-15%;width:50vw;height:50vw;background:radial-gradient(circle,var(--nude) 0%,transparent 70%);border-radius:50%;z-index:0;pointer-events:none;}
+.page{display:none;position:relative;z-index:1;max-width:430px;margin:0 auto;padding:0 0 100px;}
+.page.active{display:block;}
+.header{display:flex;flex-direction:column;align-items:center;padding:48px 24px 32px;}
+.logo-wrap{width:110px;height:110px;border-radius:50%;overflow:hidden;border:3px solid white;box-shadow:0 8px 32px rgba(232,168,184,.35);margin-bottom:20px;background:var(--rosa);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:42px;color:white;font-style:italic;cursor:pointer;position:relative;}
+.logo-wrap img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.bienvenida{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:#333;margin-bottom:6px;}
+.nombre{font-family:'Cormorant Garamond',serif;font-size:32px;letter-spacing:2px;color:#000;}
+.frase-section{margin:0 24px 24px;padding:28px;background:white;border-radius:20px;box-shadow:0 4px 24px rgba(232,168,184,.15);text-align:center;position:relative;overflow:hidden;}
+.frase-section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--rosa-claro),var(--rosa),var(--nude));}
+.frase{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;line-height:1.6;margin-bottom:10px;color:#000;}
+.frase-sub{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--rosa);}
+.sec-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#333;padding:0 24px;margin-bottom:12px;}
+.novs-scroll{display:flex;gap:14px;padding:0 24px;overflow-x:auto;scrollbar-width:none;margin-bottom:28px;}
+.novs-scroll::-webkit-scrollbar{display:none;}
+.nov-card{min-width:200px;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(232,168,184,.18);flex-shrink:0;cursor:pointer;}
+.nov-img{height:110px;background:linear-gradient(135deg,var(--rosa-claro),var(--nude));display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;}
+.nov-img img{width:100%;height:100%;object-fit:cover;}
+.nov-body{padding:14px 16px;}
+.nov-tag{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--rosa);margin-bottom:4px;}
+.nov-titulo{font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.3;color:#000;}
+.accesos{padding:0 24px;display:flex;flex-direction:column;gap:14px;}
+.acc-card{background:white;border-radius:18px;padding:20px 22px;display:flex;align-items:center;gap:18px;box-shadow:0 4px 20px rgba(232,168,184,.13);cursor:pointer;border:1.5px solid transparent;transition:transform .15s;}
+.acc-card:active{transform:scale(.98);}
+.acc-card.dest{background:linear-gradient(135deg,var(--rosa),#D4849A);color:white;}
+.acc-icono{width:46px;height:46px;border-radius:14px;background:var(--rosa-suave);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.acc-card.dest .acc-icono{background:rgba(255,255,255,.25);}
+.acc-info{flex:1;}
+.acc-titulo{font-family:'Cormorant Garamond',serif;font-size:17px;margin-bottom:2px;color:#000;}
+.acc-card.dest .acc-titulo{color:white;}
+.acc-desc{font-size:11px;color:#333;}
+.acc-card.dest .acc-desc{color:rgba(255,255,255,.9);}
+.acc-arrow{font-size:16px;color:var(--rosa-claro);}
+.acc-card.dest .acc-arrow{color:rgba(255,255,255,.7);}
+.ref-card{background:white;border-radius:16px;padding:18px 20px;margin-bottom:12px;box-shadow:0 4px 16px rgba(232,168,184,.13);}
+.ref-stars{color:#E8A8B8;font-size:16px;margin-bottom:6px;}
+.ref-comentario{font-size:13px;color:#000;line-height:1.6;margin-bottom:8px;font-style:italic;}
+.ref-autor{font-size:11px;color:#333;letter-spacing:1px;text-transform:uppercase;}
+.stars-sel{display:flex;gap:6px;margin-bottom:12px;}
+.star-btn{font-size:28px;background:none;border:none;cursor:pointer;opacity:.25;transition:opacity .15s;}
+.star-btn.on{opacity:1;}
+.serv-card{background:white;border-radius:16px;padding:20px;margin-bottom:12px;box-shadow:0 4px 16px rgba(232,168,184,.13);position:relative;overflow:hidden;}
+.serv-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--rosa-claro),var(--rosa));}
+.serv-nombre{font-family:'Cormorant Garamond',serif;font-size:18px;color:#000;margin-bottom:4px;padding-left:12px;}
+.serv-desc{font-size:13px;color:#333;line-height:1.6;padding-left:12px;margin-bottom:4px;}
+.serv-precio{font-size:12px;color:var(--rosa);letter-spacing:1px;padding-left:12px;}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:white;border-top:1px solid var(--rosa-suave);display:flex;justify-content:space-around;align-items:center;padding:12px 0 20px;z-index:100;box-shadow:0 -4px 20px rgba(232,168,184,.12);}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;opacity:.45;transition:opacity .2s;}
+.nav-item.active{opacity:1;}
+.nav-icon{font-size:20px;}
+.nav-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#000;}
+.nav-item.active .nav-label{color:var(--rosa);}
+.diag-header{padding:48px 24px 24px;text-align:center;}
+.diag-titulo{font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:8px;color:#000;}
+.diag-sub{font-size:12px;letter-spacing:2px;color:#333;}
+.prog-wrap{padding:0 24px 28px;}
+.prog-txt{display:flex;justify-content:space-between;font-size:11px;color:#333;margin-bottom:8px;}
+.prog-bar{height:4px;background:var(--rosa-suave);border-radius:10px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--rosa-claro),var(--rosa));border-radius:10px;transition:width .5s;}
+.preg-wrap{padding:0 24px;}
+.preg-num{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--rosa);margin-bottom:10px;}
+.preg-txt{font-family:'Cormorant Garamond',serif;font-size:22px;line-height:1.5;margin-bottom:28px;color:#000;}
+.opciones{display:flex;flex-direction:column;gap:12px;}
+.opc-btn{background:white;border:1.5px solid transparent;border-radius:14px;padding:16px 20px;text-align:left;cursor:pointer;box-shadow:0 3px 14px rgba(232,168,184,.12);font-family:'Jost',sans-serif;font-size:14px;color:#000;display:flex;align-items:center;gap:14px;transition:border-color .15s;}
+.opc-btn.sel{border-color:var(--rosa);background:var(--rosa-suave);}
+.opc-letra{width:28px;height:28px;border-radius:50%;background:var(--rosa-suave);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--rosa);flex-shrink:0;}
+.opc-btn.sel .opc-letra{background:var(--rosa);color:white;}
+.res-sec{padding:0 24px;}
+.res-badge{text-align:center;padding:32px 24px 24px;}
+.res-emoji{font-size:52px;margin-bottom:12px;}
+.res-tipo{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--rosa);margin-bottom:8px;}
+.res-nombre{font-family:'Cormorant Garamond',serif;font-size:30px;color:#000;}
+.card{background:white;border-radius:20px;padding:24px;margin-bottom:16px;box-shadow:0 4px 20px rgba(232,168,184,.13);position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--rosa-claro),var(--rosa),var(--nude));}
+.card-tit{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--rosa);margin-bottom:14px;}
+.card p{font-size:14px;line-height:1.7;margin-bottom:10px;color:#000;}
+.card ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.card li{font-size:13px;line-height:1.5;padding-left:18px;position:relative;color:#000;}
+.card li::before{content:'·';position:absolute;left:0;color:var(--rosa);font-size:18px;line-height:1;}
+.card li.err::before{content:'×';color:#C0706A;font-size:14px;top:1px;}
+.card li.ok::before{content:'✓';color:#8BB89A;font-size:12px;top:2px;}
+.nota{background:var(--rosa-suave);border-radius:16px;padding:18px 20px;margin-bottom:16px;border-left:3px solid var(--rosa);}
+.nota p{font-size:13px;line-height:1.7;color:#000;}
+.nota strong{color:var(--rosa);}
+.form-wrap{background:white;border-radius:20px;padding:24px;margin-bottom:16px;box-shadow:0 4px 20px rgba(232,168,184,.13);}
+.form-tit{font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:6px;color:#000;}
+.form-sub{font-size:12px;color:#333;margin-bottom:20px;}
+.form-field{margin-bottom:14px;}
+.form-field label{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#333;margin-bottom:6px;}
+.form-field input[type=text],.form-field input[type=number],.form-field input[type=tel],.form-field input[type=password]{width:100%;border:1.5px solid var(--rosa-suave);border-radius:10px;padding:12px 16px;font-family:'Jost',sans-serif;font-size:14px;color:#000;background:var(--crema);outline:none;}
+.form-field input:focus{border-color:var(--rosa);}
+.btn-rosa{width:100%;background:linear-gradient(135deg,var(--rosa),#D4849A);color:white;border:none;border-radius:14px;padding:16px;font-family:'Jost',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 18px rgba(232,168,184,.4);margin-bottom:12px;}
+.btn-rosa:disabled{opacity:.45;cursor:not-allowed;}
+.btn-out{width:100%;background:transparent;color:#333;border:1.5px solid var(--rosa-suave);border-radius:14px;padding:14px;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;margin-bottom:12px;}
+.btn-wsp{width:100%;background:#25D366;color:white;border:none;border-radius:14px;padding:16px;font-family:'Jost',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;}
+.btn-wsp:disabled{opacity:.4;cursor:not-allowed;}
+.adm-item{background:var(--crema);border:1.5px solid var(--rosa-suave);border-radius:12px;padding:14px;margin-bottom:10px;}
+.adm-item input[type=text]{width:100%;border:1px solid var(--rosa-suave);border-radius:8px;padding:8px 12px;font-family:'Jost',sans-serif;font-size:13px;color:#000;background:white;margin-bottom:8px;outline:none;}
+.adm-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#333;margin-bottom:4px;display:block;}
+.btn-del{background:none;border:none;color:#C0706A;font-size:12px;cursor:pointer;font-family:'Jost',sans-serif;letter-spacing:1px;text-transform:uppercase;}
+.ficha{background:var(--crema);border:1.5px solid var(--rosa-suave);border-radius:14px;padding:16px;margin-bottom:12px;}
+.ficha-nombre{font-family:'Cormorant Garamond',serif;font-size:18px;color:#000;margin-bottom:4px;}
+.ficha-tipo{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--rosa);margin-bottom:10px;}
+.ficha-dato{font-size:12px;color:#333;line-height:1.8;}
+.ficha-dato strong{color:#000;}
+.loading{text-align:center;padding:20px;font-size:12px;color:#333;letter-spacing:2px;text-transform:uppercase;}
+.inst-banner{margin:0 24px 20px;padding:14px 18px;background:linear-gradient(135deg,var(--rosa),#D4849A);border-radius:16px;display:none;align-items:center;gap:12px;cursor:pointer;box-shadow:0 4px 18px rgba(232,168,184,.4);}
+.inst-banner p{font-family:'Cormorant Garamond',serif;font-size:15px;color:white;margin-bottom:2px;}
+.inst-banner span{font-size:11px;color:rgba(255,255,255,.9);}
+/* UPLOAD */
+.img-upload-btn{display:flex;align-items:center;gap:8px;background:var(--rosa-suave);border:1.5px dashed var(--rosa);border-radius:10px;padding:10px 14px;cursor:pointer;font-family:'Jost',sans-serif;font-size:12px;color:var(--rosa);letter-spacing:1px;margin-bottom:8px;width:100%;justify-content:center;}
+.img-preview{width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;}
+.img-uploading{font-size:11px;color:#333;text-align:center;padding:6px 0;}
+/* MODAL NOVEDADES */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:flex-end;justify-content:center;}
+.modal-nov{background:white;border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:85vh;overflow-y:auto;padding:24px;position:relative;animation:slideUp .3s ease;}
+.modal-nov-img{width:100%;height:200px;object-fit:cover;border-radius:16px;margin-bottom:16px;display:block;}
+.modal-nov-img-placeholder{width:100%;height:200px;background:linear-gradient(135deg,var(--rosa-claro),var(--nude));border-radius:16px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:48px;}
+.modal-nov-tag{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--rosa);margin-bottom:6px;}
+.modal-nov-titulo{font-family:'Cormorant Garamond',serif;font-size:24px;color:#000;margin-bottom:12px;line-height:1.3;}
+.modal-nov-desc{font-size:14px;color:#333;line-height:1.7;margin-bottom:20px;}
+.modal-cerrar{position:absolute;top:16px;right:16px;background:var(--rosa-suave);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+.slide-in{animation:slideIn .35s ease both;}
+</style>
+</head>
+<body>
+
+<!-- INICIO -->
+<div class="page active" id="page-inicio">
+  <div class="header">
+    <div class="logo-wrap" id="logo-wrap"><span id="logo-texto">Nh</span></div>
+    <p class="bienvenida">Bienvenida a</p>
+    <h1 class="nombre">NH Estética</h1>
+  </div>
+  <div class="frase-section">
+    <p class="frase" id="frase-texto">"Tu piel merece entenderse,<br>no taparse 💖"</p>
+    <p class="frase-sub">Tu espacio de belleza consciente</p>
+  </div>
+  <div class="inst-banner" id="inst-banner" onclick="instalarApp()">
+    <span style="font-size:24px;">📲</span>
+    <div style="flex:1;"><p>Instalá la app</p><span>Guardala en tu pantalla de inicio</span></div>
+    <span style="font-size:18px;color:rgba(255,255,255,.8);">›</span>
+  </div>
+  <p class="sec-label">Novedades & Promos</p>
+  <div class="novs-scroll" id="novs-container"><div class="loading">Cargando...</div></div>
+  <p class="sec-label">Accesos rápidos</p>
+  <div class="accesos">
+    <div class="acc-card dest" onclick="irA('page-diagnostico')">
+      <div class="acc-icono">🔬</div>
+      <div class="acc-info"><p class="acc-titulo">Diagnóstico Facial</p><p class="acc-desc">Descubrí tu tipo de piel en minutos</p></div>
+      <span class="acc-arrow">›</span>
+    </div>
+    <div class="acc-card" onclick="irA('page-turnos')">
+      <div class="acc-icono">📅</div>
+      <div class="acc-info"><p class="acc-titulo">Sacar Turno</p><p class="acc-desc">Reservá tu próxima visita</p></div>
+      <span class="acc-arrow">›</span>
+    </div>
+    <div class="acc-card" onclick="irA('page-servicios')">
+      <div class="acc-icono">💆‍♀️</div>
+      <div class="acc-info"><p class="acc-titulo">Servicios</p><p class="acc-desc">Conocé todos nuestros tratamientos</p></div>
+      <span class="acc-arrow">›</span>
+    </div>
+    <div class="acc-card" onclick="irA('page-glow')">
+      <div class="acc-icono">🌟</div>
+      <div class="acc-info"><p class="acc-titulo">Glow Skin Online</p><p class="acc-desc">Programa de cuidado personalizado</p></div>
+      <span class="acc-arrow">›</span>
+    </div>
+  </div>
+  <p class="sec-label" style="margin-top:28px;">Lo que dicen nuestras clientas ⭐</p>
+  <div style="padding:0 24px;" id="refs-container"><div class="loading">Cargando...</div></div>
+  <div style="padding:0 24px 8px;">
+    <button class="btn-out" onclick="irA('page-ref-nueva')" style="margin-top:4px;">+ Dejar mi reseña</button>
+  </div>
+</div>
+
+<!-- SERVICIOS -->
+<div class="page" id="page-servicios">
+  <div class="diag-header"><p class="diag-sub">NH Estética</p><h2 class="diag-titulo">Nuestros Servicios 💆‍♀️</h2></div>
+  <div style="padding:0 24px;" id="servs-container"><div class="loading">Cargando...</div></div>
+</div>
+
+<!-- NUEVA RESEÑA -->
+<div class="page" id="page-ref-nueva">
+  <div class="diag-header"><p class="diag-sub">NH Estética</p><h2 class="diag-titulo">Dejá tu reseña ⭐</h2></div>
+  <div style="padding:0 24px;">
+    <div class="form-wrap">
+      <h3 class="form-tit">¿Cómo fue tu experiencia? 🌸</h3>
+      <p class="form-sub">Tu opinión nos ayuda a crecer</p>
+      <div class="form-field"><label>Nombre y apellido *</label><input type="text" id="ref-nombre" placeholder="Tu nombre completo" oninput="validarRef()"></div>
+      <div class="form-field">
+        <label>Puntuación *</label>
+        <div class="stars-sel">
+          <button class="star-btn" onclick="selStar(1)">⭐</button>
+          <button class="star-btn" onclick="selStar(2)">⭐</button>
+          <button class="star-btn" onclick="selStar(3)">⭐</button>
+          <button class="star-btn" onclick="selStar(4)">⭐</button>
+          <button class="star-btn" onclick="selStar(5)">⭐</button>
+        </div>
+      </div>
+      <div class="form-field"><label>Tu comentario *</label><input type="text" id="ref-comentario" placeholder="Contanos tu experiencia..." oninput="validarRef()"></div>
+      <button class="btn-rosa" id="btn-ref" onclick="enviarRef()" disabled>Publicar reseña ✨</button>
+      <button class="btn-out" onclick="irA('page-inicio')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TURNOS -->
+<div class="page" id="page-turnos">
+  <div class="diag-header"><p class="diag-sub">NH Estética</p><h2 class="diag-titulo">Sacar Turno 📅</h2></div>
+  <div style="padding:0 24px;display:flex;flex-direction:column;gap:14px;">
+    <div class="form-wrap">
+      <h3 class="form-tit">¿Cómo te llamás? 🌸</h3>
+      <p class="form-sub">Completá los datos y te confirmamos el turno</p>
+      <div class="form-field"><label>Nombre y apellido *</label><input type="text" id="t-nombre" placeholder="Tu nombre completo" oninput="validarTurno()"></div>
+      <div class="form-field"><label>¿Qué servicio te interesa? *</label><input type="text" id="t-servicio" placeholder="Ej: limpieza facial, cejas..." oninput="validarTurno()"></div>
+      <button class="btn-rosa" id="btn-turno" onclick="pedirTurno()" disabled>Quiero mi turno 💖</button>
+    </div>
+    <div class="nota"><p>📲 Al tocar el botón se abre WhatsApp con tu consulta lista. Ella te confirma día y horario.</p></div>
+  </div>
+</div>
+
+<!-- GLOW -->
+<div class="page" id="page-glow">
+  <div class="diag-header"><p class="diag-sub">NH Estética</p><h2 class="diag-titulo">Programa Glow Skin<br>Online ✨</h2></div>
+  <div style="padding:0 24px;display:flex;flex-direction:column;gap:16px;">
+    <div class="card"><p style="font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.7;color:#000;">Un programa de acompañamiento facial <strong>ONLINE</strong> pensado para quienes quieran aprender a cuidar su piel de manera consciente, personalizada y acompañada 💖</p></div>
+    <div class="card"><p class="card-tit">¿Qué incluye?</p><ul><li class="ok">4 sesiones online por Zoom</li><li class="ok">Rutina facial enviada a domicilio</li><li class="ok">Seguimiento personalizado durante todo el proceso</li></ul></div>
+    <div class="card">
+      <p class="card-tit">💖 La rutina incluye</p>
+      <ul><li>Limpiador facial</li><li>Exfoliante facial (según necesidad)</li><li>Tónico balanceador</li><li>Crema hidratante</li></ul>
+      <p style="margin-top:14px;font-size:13px;color:#000;">Podés elegir entre:</p>
+      <ul style="margin-top:8px;"><li class="ok">Rutina matificante</li><li class="ok">Rutina hidratante</li></ul>
+      <p style="margin-top:14px;font-size:12px;color:#333;font-style:italic;">Si vemos rosácea, sensibilidad, acné u otra necesidad, la rutina puede complementarse con productos adicionales 🫶🏻<br><span style="font-size:11px;">(valor agregado aparte del programa)</span></p>
+    </div>
+    <div class="card"><p class="card-tit">🌷 ¿Qué trabajamos?</p><ul><li class="ok">Análisis de tu tipo de piel</li><li class="ok">Cómo cuidar correctamente tu rostro</li><li class="ok">Qué productos usar y cuáles evitar</li><li class="ok">Seguimiento de evolución</li><li class="ok">Acompañamiento para crear constancia</li><li class="ok">Guía de cuidado facial personal</li></ul></div>
+    <div class="nota" style="text-align:center;"><p>💕 La idea no es solo vender skincare, sino <strong>enseñarte a entender qué necesita realmente tu piel</strong>.</p></div>
+    <div style="background:white;border-radius:20px;padding:24px;text-align:center;box-shadow:0 4px 20px rgba(232,168,184,.15);position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--rosa-claro),var(--rosa),var(--nude));"></div>
+      <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#333;margin-bottom:8px;">Valor del programa</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:38px;color:#000;" id="glow-precio">$200.000</p>
+    </div>
+    <button class="btn-rosa" onclick="reservarGlow()">Reservá ahora 💖</button>
+    <div style="height:8px;"></div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div class="page" id="page-admin-login">
+  <div class="diag-header"><p class="diag-sub">NH Estética</p><h2 class="diag-titulo">Panel Admin 🔐</h2></div>
+  <div style="padding:0 24px;">
+    <div class="form-wrap">
+      <h3 class="form-tit">Acceso exclusivo</h3>
+      <p class="form-sub">Solo para la administradora</p>
+      <div class="form-field"><label>Contraseña</label><input type="password" id="admin-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')loginAdmin()"></div>
+      <p id="admin-error" style="color:#C0706A;font-size:12px;margin-bottom:10px;display:none;">Contraseña incorrecta</p>
+      <button class="btn-rosa" onclick="loginAdmin()">Ingresar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="page" id="page-admin">
+  <div class="diag-header"><p class="diag-sub">Bienvenida</p><h2 class="diag-titulo">Panel Admin ✨</h2></div>
+  <div style="padding:0 24px;display:flex;flex-direction:column;gap:14px;">
+
+    <div class="card">
+      <p class="card-tit">🖼️ Logo</p>
+      <div id="logo-preview-wrap"></div>
+      <label class="img-upload-btn" id="logo-upload-btn">
+        📁 Elegir imagen de galería
+        <input type="file" accept="image/*" style="display:none;" onchange="subirLogo(this)">
+      </label>
+      <p class="img-uploading" id="logo-uploading" style="display:none;">Subiendo...</p>
+    </div>
+
+    <div class="card">
+      <p class="card-tit">🌟 Precio Glow Skin Online</p>
+      <div class="form-field" style="margin-bottom:8px;"><input type="text" id="admin-glow-precio" placeholder="Ej: $200.000"></div>
+      <button class="btn-rosa" onclick="guardarGlowPrecio()" style="padding:10px;">Guardar precio</button>
+    </div>
+
+    <div class="card">
+      <p class="card-tit">✏️ Frase principal</p>
+      <div class="form-field" style="margin-bottom:8px;"><input type="text" id="admin-frase" placeholder="Frase motivacional"></div>
+      <button class="btn-rosa" onclick="guardarFrase()" style="padding:10px;">Guardar frase</button>
+    </div>
+
+    <div class="card">
+      <p class="card-tit">💆‍♀️ Servicios</p>
+      <div id="adm-servs-lista"></div>
+      <button class="btn-out" onclick="agregarServicio()">+ Agregar servicio</button>
+    </div>
+
+    <div class="card">
+      <p class="card-tit">📢 Novedades & Promos</p>
+      <div id="adm-novs-lista"></div>
+      <button class="btn-out" onclick="agregarNovedad()">+ Agregar novedad</button>
+    </div>
+
+    <div class="card">
+      <p class="card-tit">⭐ Reseñas</p>
+      <div id="adm-refs-lista"><div class="loading">Cargando...</div></div>
+    </div>
+
+    <div class="card">
+      <p class="card-tit">👩 Fichas de Clientas</p>
+      <div id="adm-clientas-lista"><div class="loading">Cargando...</div></div>
+    </div>
+
+    <button class="btn-out" onclick="cerrarSesion()">Cerrar sesión</button>
+  </div>
+</div>
+
+<!-- DIAGNÓSTICO -->
+<div class="page" id="page-diagnostico">
+  <div class="diag-header"><p class="diag-sub">NH Estética</p><h2 class="diag-titulo">Test de Diagnóstico<br>Facial ✨</h2></div>
+  <div class="prog-wrap">
+    <div class="prog-txt"><span id="prog-label">Pregunta 1 de 8</span><span id="prog-pct">12%</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:12%"></div></div>
+  </div>
+  <div class="preg-wrap" id="preg-wrap"></div>
+</div>
+
+<!-- RESULTADO -->
+<div class="page" id="page-resultado"><div id="res-wrap"></div></div>
+
+<!-- NAV -->
+<nav class="bottom-nav">
+  <div class="nav-item active" id="nav-inicio" onclick="irA('page-inicio')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></div>
+  <div class="nav-item" id="nav-servs" onclick="irA('page-servicios')"><span class="nav-icon">💆‍♀️</span><span class="nav-label">Servicios</span></div>
+  <div class="nav-item" id="nav-diag" onclick="irA('page-diagnostico')"><span class="nav-icon">🔬</span><span class="nav-label">Diagnóstico</span></div>
+  <div class="nav-item" onclick="irA('page-admin-login')"><span class="nav-icon">🔐</span><span class="nav-label">Admin</span></div>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, collection, addDoc, deleteDoc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+const db = getFirestore(initializeApp({
+  apiKey: "AIzaSyBuE7O8U9bHkKuXTxJXjJGetikqk8jT4yM",
+  authDomain: "nh-estetica.firebaseapp.com",
+  projectId: "nh-estetica",
+  storageBucket: "nh-estetica.firebasestorage.app",
+  messagingSenderId: "483975787107",
+  appId: "1:483975787107:web:7bd189fdf20d16f35dfe56"
+}));
+
+const CLAVE = 'nh2024';
+const WSP = '542983696717';
+const CLD_NAME = 'deip81g0m';
+const CLD_PRESET = 'ml_default';
+
+// ── CLOUDINARY UPLOAD ──
+async function subirImagen(file, onProgress) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLD_PRESET);
+  fd.append('folder', 'nh-estetica');
+  if (onProgress) onProgress(true);
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLD_NAME}/image/upload`, { method: 'POST', body: fd });
+    const data = await res.json();
+    if (onProgress) onProgress(false);
+    return data.secure_url || null;
+  } catch(e) {
+    if (onProgress) onProgress(false);
+    console.error(e);
+    return null;
+  }
+}
+
+// ── LOGO ──
+window.subirLogo = async (input) => {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('logo-uploading').style.display = 'block';
+  const url = await subirImagen(file);
+  document.getElementById('logo-uploading').style.display = 'none';
+  if (!url) { alert('Error al subir. Intentá de nuevo.'); return; }
+  await fbSet('logo', url);
+};
+
+// ── PWA ──
+let deferredInstall = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstall = e;
+  document.getElementById('inst-banner').style.display = 'flex';
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('inst-banner').style.display = 'none';
+});
+window.instalarApp = () => {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  deferredInstall.userChoice.then(() => {
+    deferredInstall = null;
+    document.getElementById('inst-banner').style.display = 'none';
+  });
+};
+const mBlob = new Blob([JSON.stringify({
+  name:'NH Estética', short_name:'NH', start_url:'./', display:'standalone',
+  background_color:'#FDFAF7', theme_color:'#E8A8B8',
+  icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><circle cx='96' cy='96' r='96' fill='%23E8A8B8'/><text x='50%25' y='56%25' font-size='80' text-anchor='middle' dominant-baseline='middle' fill='white' font-family='serif' font-style='italic'>Nh</text></svg>",sizes:'192x192',type:'image/svg+xml',purpose:'any maskable'}]
+})], {type:'application/json'});
+const mLink = document.createElement('link');
+mLink.rel = 'manifest'; mLink.href = URL.createObjectURL(mBlob);
+document.head.appendChild(mLink);
+
+// ── NAV ──
+window.irA = (pageId) => {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (pageId==='page-inicio') document.getElementById('nav-inicio').classList.add('active');
+  if (pageId==='page-servicios') document.getElementById('nav-servs').classList.add('active');
+  if (pageId==='page-diagnostico') { document.getElementById('nav-diag').classList.add('active'); if(!respuestas.length) renderPreg(); }
+  if (pageId==='page-admin') renderAdmin();
+  window.scrollTo(0,0);
+};
+
+// ── FIREBASE HELPERS ──
+async function fbGet(id) {
+  try { const d = await getDoc(doc(db,'config',id)); return d.exists()?d.data().value:null; } catch { return null; }
+}
+async function fbSet(id, value) {
+  try { await setDoc(doc(db,'config',id),{value}); } catch(e){console.error('fbSet',e);}
+}
+
+// ── DEFAULTS ──
+const novsDefault = [
+  {tag:'Promo del mes',titulo:'Limpieza facial + hidratación',img:'',desc:''},
+  {tag:'Novedad',titulo:'Nuevo tratamiento Glow',img:'',desc:''},
+  {tag:'Destacado',titulo:'Ritual de relajación completo',img:'',desc:''}
+];
+const servsDefault = [
+  {nombre:'Limpieza facial profunda',desc:'Tratamiento completo de limpieza e hidratación.',precio:''},
+  {nombre:'Dermaplaning',desc:'Exfoliación suave para piel luminosa.',precio:''},
+  {nombre:'Fototerapia LED',desc:'Tratamiento con luz para regenerar y calmar la piel.',precio:''}
+];
+
+// ── TIEMPO REAL ──
+let _novs = [];
+
+onSnapshot(doc(db,'config','logo'), snap => {
+  const url = snap.exists() ? snap.data().value : null;
+  const wrap = document.getElementById('logo-wrap');
+  const texto = document.getElementById('logo-texto');
+  if (url) {
+    if (texto) texto.style.display = 'none';
+    let img = wrap.querySelector('img');
+    if (!img) { img = document.createElement('img'); wrap.appendChild(img); }
+    img.src = url;
+    // preview en admin
+    const pw = document.getElementById('logo-preview-wrap');
+    if (pw) pw.innerHTML = `<img src="${url}" class="img-preview">`;
+  }
+});
+
+onSnapshot(doc(db,'config','glow_precio'), snap => {
+  const el = document.getElementById('glow-precio');
+  if(el) el.textContent = snap.exists() ? snap.data().value : '$200.000';
+});
+
+onSnapshot(doc(db,'config','frase'), snap => {
+  if(snap.exists()) document.getElementById('frase-texto').innerHTML = snap.data().value;
+});
+
+onSnapshot(doc(db,'config','novedades'), snap => {
+  _novs = snap.exists() ? snap.data().value : novsDefault;
+  const c = document.getElementById('novs-container');
+  if(c) c.innerHTML = _novs.map((n,i)=>`
+    <div class="nov-card" onclick="abrirNov(${i})">
+      <div class="nov-img">${n.img?`<img src="${n.img}" onerror="this.parentElement.innerHTML='🌸'">` :'🌸'}</div>
+      <div class="nov-body"><p class="nov-tag">${n.tag||'Novedad'}</p><p class="nov-titulo">${n.titulo}</p></div>
+    </div>`).join('');
+});
+
+onSnapshot(doc(db,'config','servicios'), snap => {
+  const servs = snap.exists() ? snap.data().value : servsDefault;
+  const c = document.getElementById('servs-container');
+  if(c) c.innerHTML = servs.map(s=>`
+    <div class="serv-card">
+      <p class="serv-nombre">${s.nombre}</p>
+      ${s.desc?`<p class="serv-desc">${s.desc}</p>`:''}
+      ${s.precio?`<p class="serv-precio">${s.precio}</p>`:''}
+    </div>`).join('') + '<div style="height:8px;"></div>';
+});
+
+onSnapshot(query(collection(db,'resenas'),orderBy('timestamp','desc')), snap => {
+  const refs = snap.docs.map(d=>({id:d.id,...d.data()}));
+  const c = document.getElementById('refs-container');
+  if(c) c.innerHTML = refs.length ? refs.map(r=>`
+    <div class="ref-card">
+      <div class="ref-stars">${'⭐'.repeat(r.estrellas||5)}</div>
+      <p class="ref-comentario">"${r.comentario}"</p>
+      <p class="ref-autor">— ${r.nombre}</p>
+    </div>`).join('') : '<p style="font-size:13px;color:#333;padding:0 0 12px;">Aún no hay reseñas. ¡Sé la primera! 🌸</p>';
+  const a = document.getElementById('adm-refs-lista');
+  if(a) a.innerHTML = refs.length ? refs.map(r=>`
+    <div class="ref-card" style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:start;">
+        <div><div class="ref-stars">${'⭐'.repeat(r.estrellas||5)}</div><p class="ref-comentario">"${r.comentario}"</p><p class="ref-autor">— ${r.nombre}</p></div>
+        <button class="btn-del" onclick="borrarRef('${r.id}')">× Borrar</button>
+      </div>
+    </div>`).join('') : '<p style="font-size:13px;color:#333;">Sin reseñas aún.</p>';
+});
+
+onSnapshot(query(collection(db,'clientas'),orderBy('timestamp','desc')), snap => {
+  const clientas = snap.docs.map(d=>d.data());
+  const a = document.getElementById('adm-clientas-lista');
+  if(!a) return;
+  a.innerHTML = clientas.length ? clientas.map(c=>`
+    <div class="ficha">
+      <p class="ficha-nombre">${c.nombre}</p>
+      <p class="ficha-tipo">${c.tipoPiel||''} · ${c.fecha||''}</p>
+      <div class="ficha-dato">
+        <strong>Edad:</strong> ${c.edad||'—'}<br>
+        <strong>Teléfono:</strong> ${c.telefono||'—'}<br>
+        <strong>Ciudad:</strong> ${c.ciudad||'—'}<br>
+        <strong>Alergias:</strong> ${c.alergia||'—'}<br>
+        <strong>Hormonal:</strong> ${c.hormonal||'—'}<br>
+        <strong>Frecuencia:</strong> ${c.frecuencia||'—'}<br>
+        <strong>Objetivo:</strong> ${c.objetivo||'—'}
+      </div>
+    </div>`).join('') : '<p style="font-size:13px;color:#333;">Aún no hay clientas registradas.</p>';
+});
+
+// ── MODAL NOVEDADES ──
+window.abrirNov = (i) => {
+  const n = _novs[i]; if(!n) return;
+  const ex = document.getElementById('modal-nov-overlay'); if(ex) ex.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay'; overlay.id = 'modal-nov-overlay';
+  const wspMsg = encodeURIComponent(`Hola! Vi la promo «${n.titulo}» y me gustaría sacar un turno. ¿Podés darme más información?`);
+  overlay.innerHTML = `
+    <div class="modal-nov">
+      <button class="modal-cerrar" onclick="document.getElementById('modal-nov-overlay').remove()">✕</button>
+      ${n.img ? `<img src="${n.img}" class="modal-nov-img" onerror="this.outerHTML='<div class=modal-nov-img-placeholder>🌸</div>'">` : '<div class="modal-nov-img-placeholder">🌸</div>'}
+      <p class="modal-nov-tag">${n.tag||'Novedad'}</p>
+      <p class="modal-nov-titulo">${n.titulo}</p>
+      ${n.desc ? `<p class="modal-nov-desc">${n.desc}</p>` : ''}
+      <button class="btn-rosa" onclick="window.open('https://wa.me/${WSP}?text=${wspMsg}','_blank')">📅 Sacar turno</button>
+    </div>`;
+  overlay.addEventListener('click', e => { if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+};
+
+// ── RESEÑAS ──
+let estrellas = 0;
+window.selStar = (n) => {
+  estrellas = n;
+  document.querySelectorAll('.star-btn').forEach((b,i) => b.classList.toggle('on', i<n));
+  validarRef();
+};
+window.validarRef = () => {
+  const n = document.getElementById('ref-nombre').value.trim();
+  const c = document.getElementById('ref-comentario').value.trim();
+  document.getElementById('btn-ref').disabled = !(n.length>=2 && c.length>=3 && estrellas>0);
+};
+window.enviarRef = async () => {
+  const nombre = document.getElementById('ref-nombre').value.trim();
+  const comentario = document.getElementById('ref-comentario').value.trim();
+  try {
+    await addDoc(collection(db,'resenas'),{nombre,comentario,estrellas,timestamp:Date.now()});
+    document.getElementById('ref-nombre').value='';
+    document.getElementById('ref-comentario').value='';
+    estrellas=0;
+    document.querySelectorAll('.star-btn').forEach(b=>b.classList.remove('on'));
+    alert('✅ ¡Gracias por tu reseña!');
+    irA('page-inicio');
+  } catch(e){ console.error(e); }
+};
+window.borrarRef = async (id) => {
+  if(!confirm('¿Borrar esta reseña?')) return;
+  try { await deleteDoc(doc(db,'resenas',id)); } catch(e){console.error(e);}
+};
+
+// ── TURNOS ──
+window.validarTurno = () => {
+  const n=document.getElementById('t-nombre').value.trim();
+  const s=document.getElementById('t-servicio').value.trim();
+  document.getElementById('btn-turno').disabled = n.length<2||s.length<2;
+};
+window.pedirTurno = () => {
+  const n=document.getElementById('t-nombre').value.trim();
+  const s=document.getElementById('t-servicio').value.trim();
+  window.open(`https://wa.me/${WSP}?text=${encodeURIComponent(`Hola! Soy ${n}. Me gustaría sacar un turno para *${s}*. ¿Qué días y horarios tenés disponibles?`)}`, '_blank');
+};
+
+// ── GLOW ──
+window.reservarGlow = () => {
+  window.open(`https://wa.me/${WSP}?text=${encodeURIComponent('Hola! Me interesa reservar el Programa Glow Skin Online. ¿Me podés dar más información?')}`, '_blank');
+};
+
+// ── ADMIN ──
+window.loginAdmin = () => {
+  const pass = document.getElementById('admin-pass').value;
+  if(pass===CLAVE){ document.getElementById('admin-error').style.display='none'; document.getElementById('admin-pass').value=''; irA('page-admin'); }
+  else { document.getElementById('admin-error').style.display='block'; }
+};
+window.cerrarSesion = () => irA('page-inicio');
+
+async function renderAdmin() {
+  const frase = await fbGet('frase');
+  if(frase) document.getElementById('admin-frase').value = frase.replace(/<br>/g,'').replace(/"/g,'');
+  const glowPrecio = await fbGet('glow_precio');
+  if(glowPrecio) document.getElementById('admin-glow-precio').value = glowPrecio;
+  const novs = await fbGet('novedades') || novsDefault;
+  renderAdmNovs(novs);
+  const servs = await fbGet('servicios') || servsDefault;
+  renderAdmServs(servs);
+}
+
+window.guardarGlowPrecio = async () => {
+  const val = document.getElementById('admin-glow-precio').value.trim();
+  if(!val) return;
+  await fbSet('glow_precio', val);
+  alert('✅ Precio guardado');
+};
+window.guardarFrase = async () => {
+  const val = document.getElementById('admin-frase').value.trim();
+  if(!val) return;
+  await fbSet('frase', `"${val}"`);
+  alert('✅ Frase guardada');
+};
+
+function renderAdmNovs(novs) {
+  document.getElementById('adm-novs-lista').innerHTML = novs.map((n,i)=>`
+    <div class="adm-item">
+      <span class="adm-label">Etiqueta</span>
+      <input type="text" value="${n.tag||''}" onchange="updNov(${i},'tag',this.value)">
+      <span class="adm-label">Título</span>
+      <input type="text" value="${n.titulo||''}" onchange="updNov(${i},'titulo',this.value)">
+      <span class="adm-label">Descripción</span>
+      <input type="text" value="${n.desc||''}" placeholder="Descripción de la promo..." onchange="updNov(${i},'desc',this.value)">
+      <span class="adm-label">Imagen</span>
+      ${n.img ? `<img src="${n.img}" class="img-preview">` : ''}
+      <label class="img-upload-btn">
+        📁 ${n.img ? 'Cambiar imagen' : 'Elegir imagen'}
+        <input type="file" accept="image/*" style="display:none;" onchange="subirImgNov(${i},this)">
+      </label>
+      <p class="img-uploading" id="nov-uploading-${i}" style="display:none;">Subiendo...</p>
+      <button class="btn-del" onclick="delNov(${i})">× Eliminar novedad</button>
+    </div>`).join('');
+}
+
+window.subirImgNov = async (i, input) => {
+  const file = input.files[0]; if(!file) return;
+  document.getElementById(`nov-uploading-${i}`).style.display = 'block';
+  const url = await subirImagen(file);
+  document.getElementById(`nov-uploading-${i}`).style.display = 'none';
+  if(!url) { alert('Error al subir. Intentá de nuevo.'); return; }
+  const novs = await fbGet('novedades') || novsDefault;
+  novs[i].img = url;
+  await fbSet('novedades', novs);
+  renderAdmNovs(novs);
+};
+
+window.updNov = async (i,campo,val) => { const novs=await fbGet('novedades')||novsDefault; novs[i][campo]=val; await fbSet('novedades',novs); };
+window.agregarNovedad = async () => { const novs=await fbGet('novedades')||novsDefault; novs.push({tag:'Novedad',titulo:'Nueva promo',img:'',desc:''}); await fbSet('novedades',novs); renderAdmNovs(novs); };
+window.delNov = async (i) => { const novs=await fbGet('novedades')||novsDefault; novs.splice(i,1); await fbSet('novedades',novs); renderAdmNovs(novs); };
+
+function renderAdmServs(servs) {
+  document.getElementById('adm-servs-lista').innerHTML = servs.map((s,i)=>`
+    <div class="adm-item">
+      <span class="adm-label">Nombre</span>
+      <input type="text" value="${s.nombre||''}" onchange="updServ(${i},'nombre',this.value)">
+      <span class="adm-label">Descripción</span>
+      <input type="text" value="${s.desc||''}" onchange="updServ(${i},'desc',this.value)">
+      <span class="adm-label">Precio (opcional)</span>
+      <input type="text" value="${s.precio||''}" placeholder="Ej: $5.000" onchange="updServ(${i},'precio',this.value)">
+      <button class="btn-del" onclick="delServ(${i})">× Eliminar servicio</button>
+    </div>`).join('');
+}
+window.updServ = async (i,campo,val) => { const s=await fbGet('servicios')||servsDefault; s[i][campo]=val; await fbSet('servicios',s); };
+window.agregarServicio = async () => { const s=await fbGet('servicios')||servsDefault; s.push({nombre:'Nuevo servicio',desc:'',precio:''}); await fbSet('servicios',s); renderAdmServs(s); };
+window.delServ = async (i) => { const s=await fbGet('servicios')||servsDefault; s.splice(i,1); await fbSet('servicios',s); renderAdmServs(s); };
+
+// ── DIAGNÓSTICO ──
+const pregs=[
+  {t:"Cuando te levantás a la mañana, tu piel se siente…",o:[{l:"A",r:"Tirante o áspera"},{l:"B",r:"Brillosa y aceitosa"},{l:"C",r:"Brillosa en algunas zonas"},{l:"D",r:"Cómoda y equilibrada"}]},
+  {t:"¿Cómo son tus poros?",o:[{l:"A",r:"Muy pequeños o casi invisibles"},{l:"B",r:"Grandes y visibles"},{l:"C",r:"Más visibles en nariz y frente"},{l:"D",r:"Poco visibles y uniformes"}]},
+  {t:"¿Qué pasa normalmente durante el día?",o:[{l:"A",r:"Siento la piel seca"},{l:"B",r:"Aparece mucho brillo"},{l:"C",r:"Algunas zonas brillan y otras no"},{l:"D",r:"Se mantiene bastante equilibrada"}]},
+  {t:"¿Con qué frecuencia aparecen granitos?",o:[{l:"A",r:"Casi nunca"},{l:"B",r:"Muy seguido"},{l:"C",r:"Solo en algunas zonas"},{l:"D",r:"Muy ocasionalmente"}]},
+  {t:"¿Cómo reacciona tu piel a productos nuevos?",o:[{l:"A",r:"Necesita mucha hidratación"},{l:"B",r:"Algunos me generan más grasa"},{l:"C",r:"Depende de la zona"},{l:"D",r:"Generalmente los tolera bien"}]},
+  {t:"En invierno tu piel…",o:[{l:"A",r:"Se descama o reseca"},{l:"B",r:"Sigue grasa igual"},{l:"C",r:"Se resecan mejillas pero la zona T sigue grasa"},{l:"D",r:"Cambia muy poco"}]},
+  {t:"¿Cómo dura tu maquillaje?",o:[{l:"A",r:"Se marca o cuartea"},{l:"B",r:"Se derrite rápido"},{l:"C",r:"Dura diferente según la zona"},{l:"D",r:"Suele durar bastante bien"}]},
+  {t:"¿Qué sentís que necesita más tu piel?",o:[{l:"A",r:"Nutrición e hidratación"},{l:"B",r:"Controlar brillo y equilibrar"},{l:"C",r:"Balance entre hidratación y control de grasa"},{l:"D",r:"Mantenerse saludable y luminosa"}]}
+];
+const ress={
+  A:{emoji:"🌵",nombre:"Piel Seca",desc:"Tu piel produce menos oleosidad natural, por eso puede sentirse tirante, áspera, opaca o con tendencia a descamarse.",errores:["Usar limpiadores agresivos","No hidratar suficiente","Exfoliar demasiado","Usar productos matificantes fuertes"],necesita:["Limpieza suave y cremosa","Mucha hidratación","Nutrición y reparación de barrera cutánea","Protección solar diaria"],ingredientes:["Ácido hialurónico","Ceramidas","Aloe vera","Péptidos y activos nutritivos"],evitar:["Alcohol en exceso","Jabones fuertes","Exfoliaciones constantes"],tratamientos:["Limpieza profunda hidratante","Dermaplaning suave","Máscaras nutritivas","Fototerapia LED calmante","Radiofrecuencia"],objetivo:"Devolver luminosidad, elasticidad y suavidad."},
+  B:{emoji:"✨",nombre:"Piel Grasa",desc:"Tu piel produce exceso de sebo, puede verse brillante con poros visibles y tendencia a puntos negros o granitos.",errores:["Secar demasiado la piel","No hidratar por miedo al brillo","Lavarse muchas veces al día","Usar productos agresivos"],necesita:["Equilibrar la producción de grasa","Hidratación liviana","Control de brillo sin dañar la barrera","Protección solar oil free"],ingredientes:["Niacinamida","Ácido salicílico","Zinc","Aloe vera"],evitar:["Cremas muy pesadas","Productos comedogénicos","Exceso de exfoliación"],tratamientos:["Limpieza profunda descongestiva","Extracciones controladas","Peeling suave","Fototerapia LED azul","Tratamientos seborreguladores"],objetivo:"Disminuir brillo, prevenir brotes y mejorar textura."},
+  C:{emoji:"🌗",nombre:"Piel Mixta",desc:"Tenés zonas grasas (generalmente zona T) y otras más normales o secas.",errores:["Tratar todo el rostro igual","Usar productos muy secantes","No hidratar correctamente"],necesita:["Equilibrio","Hidratación ligera","Productos adaptados a distintas zonas","Protección solar diaria"],ingredientes:["Niacinamida","Ácido hialurónico","Hidratantes en gel","Activos equilibrantes"],evitar:["Productos demasiado agresivos","Cremas extremadamente pesadas"],tratamientos:["Limpieza profunda equilibrante","Hidratación localizada","Peeling suave","Dermaplaning","Fototerapia LED"],objetivo:"Mantener la piel equilibrada, luminosa y saludable."},
+  D:{emoji:"🤍",nombre:"Piel Normal",desc:"Tu piel está equilibrada: ni muy grasa ni muy seca. Igual necesita cuidado y prevención.",errores:["Descuidar la rutina","No usar protección solar","Saltear la hidratación"],necesita:["Mantenimiento y prevención","Hidratación liviana","Protección solar diaria","Rutina equilibrada"],ingredientes:["Vitamina C","Ácido hialurónico","Antioxidantes","FPS diario"],evitar:["Descuido de la rutina","Exceso de activos sin necesidad"],tratamientos:["Limpieza profunda preventiva","Hidratación profunda","Dermaplaning","Radiofrecuencia","Fototerapia LED"],objetivo:"Mantener luminosidad y prevenir envejecimiento."}
+};
+
+let respuestas=[],pregActual=0,resFinal=null;
+
+function renderPreg(){
+  const p=pregs[pregActual];
+  const pct=Math.round(((pregActual+1)/pregs.length)*100);
+  document.getElementById('prog-label').textContent=`Pregunta ${pregActual+1} de ${pregs.length}`;
+  document.getElementById('prog-pct').textContent=`${pct}%`;
+  document.getElementById('prog-fill').style.width=pct+'%';
+  const wrap=document.getElementById('preg-wrap');
+  wrap.innerHTML=`<p class="preg-num">Pregunta ${pregActual+1}</p>
+    <p class="preg-txt">${p.t}</p>
+    <div class="opciones">${p.o.map(o=>`
+      <button class="opc-btn" onclick="elegir('${o.l}',this)">
+        <span class="opc-letra">${o.l}</span><span>${o.r}</span>
+      </button>`).join('')}</div>`;
+  wrap.classList.remove('slide-in'); void wrap.offsetWidth; wrap.classList.add('slide-in');
+}
+window.elegir=(l,btn)=>{
+  document.querySelectorAll('.opc-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  setTimeout(()=>{
+    respuestas.push(l);
+    if(pregActual<pregs.length-1){pregActual++;renderPreg();}
+    else mostrarRes();
+  },380);
+};
+function mostrarRes(){
+  const c={A:0,B:0,C:0,D:0};
+  respuestas.forEach(r=>c[r]++);
+  const max=Math.max(...Object.values(c));
+  resFinal=ress[['A','B','C','D'].find(k=>c[k]===max)];
+  const r=resFinal;
+  document.getElementById('res-wrap').innerHTML=`
+    <div class="res-sec">
+      <div class="res-badge"><div class="res-emoji">${r.emoji}</div><p class="res-tipo">Tu resultado</p><h2 class="res-nombre">${r.nombre}</h2></div>
+      <div class="card"><p class="card-tit">¿Cómo se caracteriza?</p><p>${r.desc}</p></div>
+      <div class="card"><p class="card-tit">❌ Errores más comunes</p><ul>${r.errores.map(e=>`<li class="err">${e}</li>`).join('')}</ul></div>
+      <div class="card"><p class="card-tit">✅ ¿Qué necesita tu piel?</p><ul>${r.necesita.map(n=>`<li class="ok">${n}</li>`).join('')}</ul></div>
+      <div class="card"><p class="card-tit">💖 Ingredientes ideales</p><ul>${r.ingredientes.map(i=>`<li>${i}</li>`).join('')}</ul></div>
+      <div class="card"><p class="card-tit">⚠️ Evitar</p><ul>${r.evitar.map(e=>`<li class="err">${e}</li>`).join('')}</ul></div>
+      <div class="card"><p class="card-tit">✨ Tratamientos en gabinete</p><ul>${r.tratamientos.map(t=>`<li class="ok">${t}</li>`).join('')}</ul><p style="margin-top:12px;font-size:12px;color:#333;font-style:italic;">🎯 ${r.objetivo}</p></div>
+      <div class="nota"><p>💧 Si sentís <strong>tirantez, falta de agua o piel apagada</strong>, puede estar <strong>deshidratada</strong>.</p></div>
+      <div class="nota"><p>🌸 Si tu piel se <strong>irrita o enrojece fácilmente</strong>, puede presentar <strong>sensibilidad</strong>. 💖</p></div>
+      <div class="nota" style="text-align:center;"><p>💖 <strong>Recordá:</strong> cada piel es única. El objetivo es entender qué necesita para verse sana y luminosa.</p></div>
+      <button class="btn-rosa" onclick="mostrarFormulario()">Quiero mi acompañamiento personalizado 💖</button>
+      <button class="btn-out" onclick="reiniciarTest()">Hacer el test de nuevo</button>
+      <div id="form-wrap" style="display:none;margin-top:8px;">
+        <div class="form-wrap">
+          <h3 class="form-tit">Un paso más 🌸</h3>
+          <p class="form-sub">Completá tus datos y te contactamos</p>
+          <div class="form-field"><label>Nombre y apellido *</label><input type="text" id="f-nombre" placeholder="Tu nombre completo" oninput="validarForm()"></div>
+          <div class="form-field"><label>Edad *</label><input type="number" id="f-edad" placeholder="Tu edad" min="10" max="99" oninput="validarForm()"></div>
+          <div class="form-field"><label>Teléfono *</label><input type="tel" id="f-telefono" placeholder="Tu número de WhatsApp" oninput="validarForm()"></div>
+          <div class="form-field"><label>Ciudad *</label><input type="text" id="f-ciudad" placeholder="Tu ciudad" oninput="validarForm()"></div>
+          <div class="form-field"><label>¿Tenés alergia o sensibilidad a algún ingrediente?</label><input type="text" id="f-alergia" placeholder="Ej: perfumes, ninguna"></div>
+          <div class="form-field"><label>¿Tomás medicamento hormonal o anticonceptivo?</label><input type="text" id="f-hormonal" placeholder="Ej: sí, pastillas / no"></div>
+          <div class="form-field"><label>Frecuencia de limpiezas faciales</label><input type="text" id="f-frecuencia" placeholder="Ej: una vez al mes"></div>
+          <div class="form-field"><label>¿Qué te gustaría mejorar o lograr con tu piel?</label><input type="text" id="f-objetivo" placeholder="Tu objetivo principal"></div>
+          <button class="btn-wsp" id="btn-wsp" onclick="enviarWsp()" disabled><span>💬</span> Enviar por WhatsApp</button>
+        </div>
+      </div>
+    </div>`;
+  irA('page-resultado');
+}
+window.mostrarFormulario=()=>{
+  document.getElementById('form-wrap').style.display='block';
+  document.getElementById('form-wrap').scrollIntoView({behavior:'smooth',block:'start'});
+};
+window.validarForm=()=>{
+  const n=document.getElementById('f-nombre').value.trim();
+  const e=document.getElementById('f-edad').value.trim();
+  const t=document.getElementById('f-telefono').value.trim();
+  const c=document.getElementById('f-ciudad').value.trim();
+  document.getElementById('btn-wsp').disabled=!(n.length>=2&&e&&t.length>=6&&c.length>=2);
+};
+window.enviarWsp=async()=>{
+  const nombre=document.getElementById('f-nombre').value.trim();
+  const edad=document.getElementById('f-edad').value.trim();
+  const tel=document.getElementById('f-telefono').value.trim();
+  const ciudad=document.getElementById('f-ciudad').value.trim();
+  const alergia=document.getElementById('f-alergia').value.trim()||'No indicó';
+  const hormonal=document.getElementById('f-hormonal').value.trim()||'No indicó';
+  const frecuencia=document.getElementById('f-frecuencia').value.trim()||'No indicó';
+  const objetivo=document.getElementById('f-objetivo').value.trim()||'No indicó';
+  const tipo=resFinal?resFinal.nombre:'';
+  try {
+    await addDoc(collection(db,'clientas'),{nombre,edad,telefono:tel,ciudad,alergia,hormonal,frecuencia,objetivo,tipoPiel:tipo,fecha:new Date().toLocaleDateString('es-AR'),timestamp:Date.now()});
+  } catch(e){console.error(e);}
+  const msg=`Hola, soy ${nombre}. Hice el test de diagnóstico facial en NH Estética y mi resultado fue *${tipo}*. Quiero un acompañamiento personalizado.\n\n📋 *Mis datos:*\n• Edad: ${edad}\n• Teléfono: ${tel}\n• Ciudad: ${ciudad}\n• Alergias: ${alergia}\n• Hormonal: ${hormonal}\n• Frecuencia limpiezas: ${frecuencia}\n• Objetivo: ${objetivo}`;
+  window.open(`https://wa.me/${WSP}?text=${encodeURIComponent(msg)}`, '_blank');
+};
+window.reiniciarTest=()=>{ respuestas=[];pregActual=0;resFinal=null; irA('page-diagnostico');renderPreg(); };
+
+renderPreg();
+</script>
+</body>
+</html>

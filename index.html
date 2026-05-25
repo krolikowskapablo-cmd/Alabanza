@@ -365,7 +365,7 @@ const db = getFirestore(initializeApp({
 const CLAVE = 'nh2024';
 const WSP = '542983696717';
 const CLD_NAME = 'deip81g0m';
-const CLD_PRESET = 'ml_default';
+const CLD_PRESET = 'nh-estetica';
 
 // ── CLOUDINARY UPLOAD ──
 async function subirImagen(file, onProgress) {
@@ -524,12 +524,15 @@ onSnapshot(query(collection(db,'resenas'),orderBy('timestamp','desc')), snap => 
 });
 
 onSnapshot(query(collection(db,'clientas'),orderBy('timestamp','desc')), snap => {
-  const clientas = snap.docs.map(d=>d.data());
+  const clientas = snap.docs.map(d=>({id:d.id,...d.data()}));
   const a = document.getElementById('adm-clientas-lista');
   if(!a) return;
   a.innerHTML = clientas.length ? clientas.map(c=>`
     <div class="ficha">
-      <p class="ficha-nombre">${c.nombre}</p>
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+        <p class="ficha-nombre">${c.nombre}</p>
+        <button class="btn-del" onclick="borrarClienta('${c.id}')">× Borrar</button>
+      </div>
       <p class="ficha-tipo">${c.tipoPiel||''} · ${c.fecha||''}</p>
       <div class="ficha-dato">
         <strong>Edad:</strong> ${c.edad||'—'}<br>
@@ -540,6 +543,7 @@ onSnapshot(query(collection(db,'clientas'),orderBy('timestamp','desc')), snap =>
         <strong>Frecuencia:</strong> ${c.frecuencia||'—'}<br>
         <strong>Objetivo:</strong> ${c.objetivo||'—'}
       </div>
+      <button class="btn-out" style="margin-top:10px;padding:8px;" onclick="editarClienta('${c.id}','${encodeURIComponent(JSON.stringify(c))}')">✏️ Editar ficha</button>
     </div>`).join('') : '<p style="font-size:13px;color:#333;">Aún no hay clientas registradas.</p>';
 });
 
@@ -591,6 +595,53 @@ window.enviarRef = async () => {
 window.borrarRef = async (id) => {
   if(!confirm('¿Borrar esta reseña?')) return;
   try { await deleteDoc(doc(db,'resenas',id)); } catch(e){console.error(e);}
+};
+
+window.borrarClienta = async (id) => {
+  if(!confirm('¿Borrar esta ficha de clienta?')) return;
+  try { await deleteDoc(doc(db,'clientas',id)); } catch(e){console.error(e);}
+};
+
+window.editarClienta = (id, dataEnc) => {
+  const c = JSON.parse(decodeURIComponent(dataEnc));
+  const ex = document.getElementById('modal-editar-clienta'); if(ex) ex.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay'; overlay.id = 'modal-editar-clienta';
+  overlay.innerHTML = `
+    <div class="modal-nov">
+      <button class="modal-cerrar" onclick="document.getElementById('modal-editar-clienta').remove()">✕</button>
+      <p class="modal-nov-tag">Editando ficha</p>
+      <p class="modal-nov-titulo" style="margin-bottom:16px;">${c.nombre}</p>
+      <div class="form-field"><label>Nombre y apellido</label><input type="text" id="ec-nombre" value="${c.nombre||''}"></div>
+      <div class="form-field"><label>Edad</label><input type="text" id="ec-edad" value="${c.edad||''}"></div>
+      <div class="form-field"><label>Teléfono</label><input type="text" id="ec-telefono" value="${c.telefono||''}"></div>
+      <div class="form-field"><label>Ciudad</label><input type="text" id="ec-ciudad" value="${c.ciudad||''}"></div>
+      <div class="form-field"><label>Alergias</label><input type="text" id="ec-alergia" value="${c.alergia||''}"></div>
+      <div class="form-field"><label>Hormonal</label><input type="text" id="ec-hormonal" value="${c.hormonal||''}"></div>
+      <div class="form-field"><label>Frecuencia limpiezas</label><input type="text" id="ec-frecuencia" value="${c.frecuencia||''}"></div>
+      <div class="form-field"><label>Objetivo</label><input type="text" id="ec-objetivo" value="${c.objetivo||''}"></div>
+      <button class="btn-rosa" onclick="guardarEdicionClienta('${id}')">Guardar cambios</button>
+    </div>`;
+  overlay.addEventListener('click', e => { if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+};
+
+window.guardarEdicionClienta = async (id) => {
+  const datos = {
+    nombre: document.getElementById('ec-nombre').value.trim(),
+    edad: document.getElementById('ec-edad').value.trim(),
+    telefono: document.getElementById('ec-telefono').value.trim(),
+    ciudad: document.getElementById('ec-ciudad').value.trim(),
+    alergia: document.getElementById('ec-alergia').value.trim(),
+    hormonal: document.getElementById('ec-hormonal').value.trim(),
+    frecuencia: document.getElementById('ec-frecuencia').value.trim(),
+    objetivo: document.getElementById('ec-objetivo').value.trim(),
+  };
+  try {
+    await setDoc(doc(db,'clientas',id), datos, {merge:true});
+    document.getElementById('modal-editar-clienta').remove();
+    alert('✅ Ficha actualizada');
+  } catch(e){ console.error(e); alert('Error al guardar'); }
 };
 
 // ── TURNOS ──

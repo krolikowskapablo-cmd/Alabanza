@@ -151,7 +151,7 @@ body::after{content:'';position:fixed;bottom:-20%;left:-15%;width:50vw;height:50
   </div>
   <div class="frase-section">
     <p class="frase" id="frase-texto">"Tu piel merece entenderse,<br>no taparse 💖"</p>
-    
+    <p class="frase-sub">Tu espacio de belleza consciente</p>
   </div>
   <div class="inst-banner" id="inst-banner" onclick="instalarApp()">
     <span style="font-size:24px;">📲</span>
@@ -839,6 +839,8 @@ window.validarForm=()=>{
   document.getElementById('btn-wsp').disabled=!(n.length>=2&&e&&t.length>=6&&c.length>=2);
 };
 window.enviarWsp=async()=>{
+  const btn = document.getElementById('btn-wsp');
+  if(btn) btn.disabled = true;
   const nombre=document.getElementById('f-nombre').value.trim();
   const edad=document.getElementById('f-edad').value.trim();
   const tel=document.getElementById('f-telefono').value.trim();
@@ -848,11 +850,11 @@ window.enviarWsp=async()=>{
   const frecuencia=document.getElementById('f-frecuencia').value.trim()||'No indicó';
   const objetivo=document.getElementById('f-objetivo').value.trim()||'No indicó';
   const tipo=resFinal?resFinal.nombre:'';
+  const msg=`Hola, soy ${nombre}. Hice el test de diagnóstico facial en NH Estética y mi resultado fue *${tipo}*. Quiero un acompañamiento personalizado.\n\n📋 *Mis datos:*\n• Edad: ${edad}\n• Teléfono: ${tel}\n• Ciudad: ${ciudad}\n• Alergias: ${alergia}\n• Hormonal: ${hormonal}\n• Frecuencia limpiezas: ${frecuencia}\n• Objetivo: ${objetivo}`;
+  window.open(`https://wa.me/${WSP}?text=${encodeURIComponent(msg)}`, '_blank');
   try {
     await addDoc(collection(db,'clientas'),{nombre,edad,telefono:tel,ciudad,alergia,hormonal,frecuencia,objetivo,tipoPiel:tipo,fecha:new Date().toLocaleDateString('es-AR'),timestamp:Date.now()});
   } catch(e){console.error(e);}
-  const msg=`Hola, soy ${nombre}. Hice el test de diagnóstico facial en NH Estética y mi resultado fue *${tipo}*. Quiero un acompañamiento personalizado.\n\n📋 *Mis datos:*\n• Edad: ${edad}\n• Teléfono: ${tel}\n• Ciudad: ${ciudad}\n• Alergias: ${alergia}\n• Hormonal: ${hormonal}\n• Frecuencia limpiezas: ${frecuencia}\n• Objetivo: ${objetivo}`;
-  window.open(`https://wa.me/${WSP}?text=${encodeURIComponent(msg)}`, '_blank');
 };
 window.reiniciarTest=()=>{ respuestas=[];pregActual=0;resFinal=null; irA('page-diagnostico');renderPreg(); };
 
